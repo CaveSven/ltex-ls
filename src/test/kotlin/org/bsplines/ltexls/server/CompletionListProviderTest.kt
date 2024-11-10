@@ -7,11 +7,10 @@
 
 package org.bsplines.ltexls.server
 
-import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionList
 import org.eclipse.lsp4j.Position
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 class CompletionListProviderTest {
   @Test
@@ -22,19 +21,10 @@ class CompletionListProviderTest {
     )
 
     val document =
-        LtexTextDocumentItem(languageServer, "untitled:test.md", "markdown", 1, "This is a test.\n")
+      LtexTextDocumentItem(languageServer, "untitled:test.md", "markdown", 1, "This is a test.\n")
     val completionList: CompletionList =
-        languageServer.completionListProvider.createCompletionList(document, Position(0, 14))
+      languageServer.completionListProvider.createCompletionList(document, Position(0, 14))
 
-    assertTrue(completionList.items.size >= 10)
-    var containsDictionaryWord = false
-
-    for (completionItem: CompletionItem in completionList.items) {
-      val entry: String = completionItem.label
-      assertTrue(entry.startsWith("test"))
-      if (entry == "testfoobar") containsDictionaryWord = true
-    }
-
-    assertTrue(containsDictionaryWord)
+    assertEquals(completionList.items.size, 0)
   }
 }

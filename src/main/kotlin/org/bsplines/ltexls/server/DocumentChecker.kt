@@ -23,8 +23,6 @@ import org.bsplines.ltexls.tools.I18n
 import org.bsplines.ltexls.tools.Logging
 import org.bsplines.ltexls.tools.Tools
 import org.eclipse.lsp4j.Range
-import org.languagetool.DetectedLanguage
-import org.languagetool.language.identifier.SimpleLanguageIdentifier
 import org.languagetool.markup.AnnotatedText
 import org.languagetool.markup.TextPart
 import java.time.Duration
@@ -36,8 +34,6 @@ class DocumentChecker(
 ) {
   var lastCheckedDocument: LtexTextDocumentItem? = null
     private set
-
-  private val simpleLanguageIdentifier = SimpleLanguageIdentifier()
 
   private fun fragmentizeDocument(
     document: LtexTextDocumentItem,
@@ -102,27 +98,15 @@ class DocumentChecker(
     val codeFragment: CodeFragment = annotatedTextFragment.codeFragment
     var settings: Settings = codeFragment.settings
 
-    if (settings.languageShortCode == "auto") {
-      val cleanText: String = this.simpleLanguageIdentifier.cleanAndShortenText(
-        annotatedTextFragment.annotatedText.plainText,
-      )
-      val detectedLanguage: DetectedLanguage? =
-        this.simpleLanguageIdentifier.detectLanguage(cleanText, emptyList(), emptyList())
-      val languageShortCode: String =
-        detectedLanguage?.detectedLanguage?.shortCodeWithCountryAndVariant ?: "en-US"
-      annotatedTextFragment.codeFragment.languageShortCode = languageShortCode
-      settings = settings.copy(_languageShortCode = languageShortCode)
-    }
-
     this.settingsManager.settings = settings
 
     val languageToolInterface: LanguageToolInterface =
-        this.settingsManager.languageToolInterface ?: run {
-          Logging.LOGGER.warning(
-            I18n.format("skippingTextCheckAsLanguageToolHasNotBeenInitialized"),
-          )
-          return emptyList()
-        }
+      this.settingsManager.languageToolInterface ?: run {
+        Logging.LOGGER.warning(
+          I18n.format("skippingTextCheckAsLanguageToolHasNotBeenInitialized"),
+        )
+        return emptyList()
+      }
 
     val codeLanguageId: String = codeFragment.codeLanguageId
 
@@ -276,9 +260,9 @@ class DocumentChecker(
     try {
       val codeFragments: List<CodeFragment> = fragmentizeDocument(document, range)
       val annotatedTextFragments: List<AnnotatedTextFragment> =
-          buildAnnotatedTextFragments(codeFragments, document, (range != null))
+        buildAnnotatedTextFragments(codeFragments, document, (range != null))
       val matches: List<LanguageToolRuleMatch> =
-          checkAnnotatedTextFragments(annotatedTextFragments, rangeStartPos)
+        checkAnnotatedTextFragments(annotatedTextFragments, rangeStartPos)
       return Pair(matches, annotatedTextFragments)
     } finally {
       this.settingsManager.settings = originalSettings
@@ -295,10 +279,10 @@ class DocumentChecker(
     ): Boolean {
       return (
         (rangeStartPos == null)
-        && !settings.enabled.contains(codeLanguageId)
-        && (codeLanguageId != "nop")
-        && (codeLanguageId != "plaintext")
-      )
+          && !settings.enabled.contains(codeLanguageId)
+          && (codeLanguageId != "nop")
+          && (codeLanguageId != "plaintext")
+        )
     }
   }
 }

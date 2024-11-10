@@ -8,6 +8,9 @@
 
 # LT<sub>E</sub>X LS — LT<sub>E</sub>X Language Server
 
+> Run `mvn package` to build local version. This creates a zip in /target with a bin dir that contains the required ltex-ls executbale.
+
+
 [![version number](https://badgen.net/github/release/valentjn/ltex-ls/stable)![release date](https://badgen.net/github/last-commit/valentjn/ltex-ls/release?label=)](https://github.com/valentjn/ltex-ls/releases)
 
 [![vscode-ltex](https://badgen.net/github/license/valentjn/vscode-ltex?label=vscode-ltex)](https://github.com/valentjn/vscode-ltex)&nbsp;

@@ -36,7 +36,7 @@ class DocumentCheckerTest {
       "This is an \\textbf{test.}\n% LTeX: language=de-DE\nDies ist eine \\textbf{Test.}\n",
     )
     var checkingResult: Pair<List<LanguageToolRuleMatch>, List<AnnotatedTextFragment>> =
-        checkDocument(document)
+      checkDocument(document)
     assertMatches(checkingResult.first, 8, 10, 58, 75)
 
     document = createDocument(
@@ -126,21 +126,6 @@ class DocumentCheckerTest {
     assertMatches(checkDocument(document).first, 8, 10, 62, 73)
   }
 
-  @Test
-  fun testLanguageDetection() {
-    val document: LtexTextDocumentItem = createDocument(
-      "markdown",
-      """
-      This is an **test.**
-
-      <!-- LTeX: language=auto -->
-
-      Dies ist eine **Test**.
-
-      """.trimIndent(),
-    )
-    assertMatches(checkDocument(document).first, 8, 10, 61, 72)
-  }
 
   @Test
   fun testRange() {
@@ -151,7 +136,7 @@ class DocumentCheckerTest {
     val settingsManager = SettingsManager(Settings(_logLevel = Level.FINEST))
     val documentChecker = DocumentChecker(settingsManager)
     var checkingResult: Pair<List<LanguageToolRuleMatch>, List<AnnotatedTextFragment>> =
-        documentChecker.check(document, Range(Position(4, 0), Position(4, 20)))
+      documentChecker.check(document, Range(Position(4, 0), Position(4, 20)))
     var matches: List<LanguageToolRuleMatch> = checkingResult.first
     assertEquals(1, matches.size)
     assertEquals("EN_A_VS_AN", matches[0].ruleId)
@@ -187,7 +172,7 @@ class DocumentCheckerTest {
       "This is an unknownword.\n",
     )
     val checkingResult: Pair<List<LanguageToolRuleMatch>, List<AnnotatedTextFragment>> =
-        checkDocument(document)
+      checkDocument(document)
     val params = CodeActionParams(
       TextDocumentIdentifier(document.uri),
       Range(Position(0, 0), Position(100, 0)),
@@ -196,7 +181,7 @@ class DocumentCheckerTest {
     val settingsManager = SettingsManager()
     val codeActionProvider = CodeActionProvider(settingsManager)
     val result: List<Either<Command, CodeAction>> =
-        codeActionProvider.generate(params, document, checkingResult)
+      codeActionProvider.generate(params, document, checkingResult)
     assertEquals(4, result.size)
   }
 
@@ -214,7 +199,7 @@ class DocumentCheckerTest {
       """.trimIndent(),
     )
     val checkingResult: Pair<List<LanguageToolRuleMatch>, List<AnnotatedTextFragment>> =
-        checkDocument(document)
+      checkDocument(document)
     assertEquals(2, checkingResult.first.size)
   }
 
@@ -334,16 +319,12 @@ class DocumentCheckerTest {
 
       try {
         assertEquals(
-          "Use <suggestion>a</suggestion> instead of 'an' if the following "
-          + "word doesn't start with a vowel sound, e.g. "
-          + "'a sentence', 'a university'.",
+          "Use <suggestion>a</suggestion> instead of 'an' if the following " + "word doesn't start with a vowel sound, e.g. " + "'a sentence', 'a university'.",
           matches[0].message,
         )
       } catch (e: AssertionError) {
         assertEquals(
-          "Use \u201ca\u201d instead of \u2018an\u2019 if the following "
-          + "word doesn\u2019t start with a vowel sound, e.g.\u00a0"
-          + "\u2018a sentence\u2019, \u2018a university\u2019.",
+          "Use \u201ca\u201d instead of \u2018an\u2019 if the following " + "word doesn\u2019t start with a vowel sound, e.g.\u00a0" + "\u2018a sentence\u2019, \u2018a university\u2019.",
           matches[0].message,
         )
       }
@@ -357,16 +338,12 @@ class DocumentCheckerTest {
 
       try {
         assertEquals(
-          "M\u00f6glicherweise fehlende grammatische \u00dcbereinstimmung des "
-          + "Genus (m\u00e4nnlich, weiblich, s\u00e4chlich - "
-          + "Beispiel: 'der Fahrrad' statt 'das Fahrrad').",
+          "M\u00f6glicherweise fehlende grammatische \u00dcbereinstimmung des " + "Genus (m\u00e4nnlich, weiblich, s\u00e4chlich - " + "Beispiel: 'der Fahrrad' statt 'das Fahrrad').",
           matches[1].message,
         )
       } catch (e: AssertionError) {
         assertEquals(
-          "M\u00f6glicherweise fehlende grammatische \u00dcbereinstimmung des "
-          + "Genus (m\u00e4nnlich, weiblich, s\u00e4chlich - "
-          + "Beispiel: \u201ader Fahrrad\u2018 statt \u201adas Fahrrad\u2018).",
+          "M\u00f6glicherweise fehlende grammatische \u00dcbereinstimmung des " + "Genus (m\u00e4nnlich, weiblich, s\u00e4chlich - " + "Beispiel: \u201ader Fahrrad\u2018 statt \u201adas Fahrrad\u2018).",
           matches[1].message,
         )
       }
