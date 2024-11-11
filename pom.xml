@@ -50,13 +50,13 @@
     <dependency>
       <groupId>org.languagetool</groupId>
       <artifactId>languagetool-core</artifactId>
-      <version>6.0</version>
+      <version>6.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.languagetool</groupId>
-      <artifactId>language-all</artifactId>
-      <version>6.0</version>
+      <artifactId>language-en</artifactId>
+      <version>6.5</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -136,18 +136,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.languagetool</groupId>
-      <artifactId>languagetool-server</artifactId>
-      <version>6.0</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>logback-classic</artifactId>
-          <groupId>ch.qos.logback</groupId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.lsp4j</groupId>
       <artifactId>org.eclipse.lsp4j.jsonrpc</artifactId>
       <version>0.19.0</version>
@@ -155,7 +143,6 @@
   </dependencies>
   <build>
     <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-    <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -176,13 +163,6 @@
             <id>compile</id>
             <goals>
               <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <?m2e execute onConfiguration?>
-            <id>test-compile</id>
-            <goals>
-              <goal>test-compile</goal>
             </goals>
           </execution>
         </executions>
