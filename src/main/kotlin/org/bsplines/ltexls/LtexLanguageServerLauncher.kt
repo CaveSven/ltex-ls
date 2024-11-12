@@ -9,7 +9,6 @@ package org.bsplines.ltexls
 
 import org.bsplines.ltexls.client.LtexLanguageClient
 import org.bsplines.ltexls.server.LtexLanguageServer
-import org.bsplines.ltexls.server.NonServerChecker
 import org.bsplines.ltexls.tools.I18n
 import org.bsplines.ltexls.tools.Logging
 import org.bsplines.ltexls.tools.TeeInputStream
@@ -52,33 +51,6 @@ class LtexLanguageServerLauncher : Callable<Int> {
     description = ["Keep server alive when client terminates."],
   )
   private var endless: Boolean = false
-
-  @Option(
-    names = ["--input-documents"],
-    hidden = true,
-    arity = "1..*",
-    description = [
-      "Instead of running as server, check the documents at the paths "
-      + "<inputDocuments>, print the results to standard output, and exit. "
-      + "Directories are traversed recursively. "
-      + "If - is given, standard input will be checked as plain text.",
-    ],
-  )
-  private var inputDocuments: List<Path>? = null
-
-  @Option(
-    names = ["--settings-file"],
-    hidden = true,
-    description = [
-      "Use the settings stored in the JSON file <settingsFile> "
-      + "(only relevant when using --input-documents). "
-      + "The format is either nested JSON objects ({\"latex\": {\"commands\": ...}}) or "
-      + "a flattened JSON object ({\"latex.commands\": ...}). "
-      + "Setting names may be prefixed by a top level named `ltex` "
-      + "(e.g., {\"ltex.latex.commands\": ...} is accepted as well).",
-    ],
-  )
-  private var settingsFile: Path? = null
 
   @Option(
     names = ["--server-type"],
@@ -172,18 +144,6 @@ class LtexLanguageServerLauncher : Callable<Int> {
     logOutputStream: OutputStream?,
     port: Int,
   ): Int? {
-    val inputDocuments: List<Path>? = this.inputDocuments
-
-    if (inputDocuments != null) {
-      // deprecated in 14.0.0
-      Logging.LOGGER.warning(I18n.format("inputDocumentsAndSettingsFileAreDeprecated"))
-      val nonServerChecker = NonServerChecker()
-      val settingsFile: Path? = this.settingsFile
-      if (settingsFile != null) nonServerChecker.loadSettings(settingsFile)
-      val numberOfMatches: Int = nonServerChecker.check(inputDocuments)
-      return (if (numberOfMatches == 0) 0 else EXIT_CODE_MATCHES_FOUND)
-    }
-
     var inputStream: InputStream = System.`in`
     var outputStream: OutputStream = System.out
 
@@ -211,7 +171,6 @@ class LtexLanguageServerLauncher : Callable<Int> {
   }
 
   companion object {
-    private const val EXIT_CODE_MATCHES_FOUND = 3
     private const val SERVER_SOCKET_BACKLOG_SIZE = 50
 
     @JvmStatic

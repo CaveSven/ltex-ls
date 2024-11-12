@@ -9,7 +9,6 @@ package org.bsplines.ltexls.settings
 
 import org.bsplines.ltexls.languagetool.LanguageToolHttpInterface
 import org.bsplines.ltexls.languagetool.LanguageToolInterface
-import org.bsplines.ltexls.languagetool.LanguageToolJavaInterface
 import org.bsplines.ltexls.tools.I18n
 import org.bsplines.ltexls.tools.Logging
 import java.util.logging.Level
@@ -72,20 +71,11 @@ class SettingsManager {
 
   private fun reinitializeLanguageToolInterface() {
     val languageToolInterface: LanguageToolInterface =
-    if (this.settings.languageToolHttpServerUri.isEmpty()) {
-      LanguageToolJavaInterface(
-        this.settings.languageShortCode,
-        this.settings.motherTongueShortCode,
-        this.settings.sentenceCacheSize,
-        this.settings.dictionary,
-      )
-    } else {
-      LanguageToolHttpInterface(
+    LanguageToolHttpInterface(
         this.settings.languageToolHttpServerUri,
         this.settings.languageShortCode,
         this.settings.motherTongueShortCode,
       )
-    }
 
     if (!languageToolInterface.isInitialized()) {
       this.languageToolInterface = null
